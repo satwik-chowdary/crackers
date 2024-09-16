@@ -31,7 +31,7 @@
             width: 5px;
             height: 20px;
             background-color: red;
-            animation: shoot-up 2s ease-out infinite;
+            animation: shoot-up 2s ease-out forwards;
         }
 
         @keyframes shoot-up {
@@ -49,7 +49,7 @@
             }
         }
 
-        .burst {
+        .spark {
             position: absolute;
             width: 5px;
             height: 5px;
@@ -60,11 +60,11 @@
 
         @keyframes burst-animation {
             0% {
-                transform: scale(0);
+                transform: translate(0, 0) scale(1);
                 opacity: 1;
             }
             100% {
-                transform: scale(2);
+                transform: translate(var(--x), var(--y)) scale(0.5);
                 opacity: 0;
             }
         }
@@ -82,6 +82,7 @@
 
             document.body.appendChild(firecracker);
 
+            // Trigger explosion after 2 seconds (the duration of the firecracker flight)
             setTimeout(() => {
                 createBurst(firecracker);
                 firecracker.remove();
@@ -89,23 +90,44 @@
         }
 
         function createBurst(firecracker) {
-            for (let i = 0; i < 10; i++) {
-                const burst = document.createElement('div');
-                burst.classList.add('burst');
-                burst.style.left = firecracker.style.left;
-                burst.style.bottom = '80vh';
-                burst.style.animation = `burst-animation 1s ease-out forwards`;
-                burst.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px)`;
+            const numSparks = 20; // Number of sparks per burst
+            const colors = ['red', 'yellow', 'blue', 'green', 'orange', 'purple', 'pink'];
+            const angleStep = (2 * Math.PI) / numSparks; // To create sparks in a circular form
 
-                document.body.appendChild(burst);
+            for (let i = 0; i < numSparks; i++) {
+                const spark = document.createElement('div');
+                spark.classList.add('spark');
 
+                // Randomize the spark color
+                spark.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+                // Calculate angle and position for circular burst
+                const angle = i * angleStep;
+                const x = Math.cos(angle) * 100 + 'px'; // Spread sparks out to 100px radius
+                const y = Math.sin(angle) * 100 + 'px';
+
+                // Set custom properties for animation
+                spark.style.setProperty('--x', x);
+                spark.style.setProperty('--y', y);
+
+                // Set spark's initial position at the top of the firecracker
+                spark.style.left = firecracker.style.left;
+                spark.style.bottom = '80vh';
+
+                // Add burst animation
+                spark.style.animation = `burst-animation 1s ease-out forwards`;
+
+                document.body.appendChild(spark);
+
+                // Remove sparks after animation
                 setTimeout(() => {
-                    burst.remove();
+                    spark.remove();
                 }, 1000);
             }
         }
 
-        setInterval(createFirecracker, 500);
+        // Create firecrackers repeatedly
+        setInterval(createFirecracker, 1000);
     </script>
 
 </body>
