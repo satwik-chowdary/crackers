@@ -8,70 +8,105 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #000;
+            background-color: black;
             overflow: hidden;
+            position: relative;
+            font-family: Arial, sans-serif;
         }
 
         h1 {
-            color: #fff;
+            position: absolute;
+            color: white;
             font-size: 4rem;
-            text-align: center;
             z-index: 10;
-            position: relative;
         }
 
-        .firework {
+        .firecracker {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        @keyframes firework-animation {
-            0% { opacity: 0; transform: scale(0.1); }
-            50% { opacity: 1; transform: scale(1.5); }
-            100% { opacity: 0; transform: scale(2); }
-        }
-
-        .firework span {
-            position: absolute;
-            display: block;
-            width: 10px;
-            height: 10px;
+            bottom: 0;
+            width: 5px;
+            height: 20px;
             background-color: red;
-            border-radius: 50%;
-            animation: firework-animation 2s ease-out infinite;
+            animation: shoot-up 2s ease-out infinite;
         }
 
-        .firework span:nth-child(1) { top: -80px; left: 0; animation-delay: 0s; }
-        .firework span:nth-child(2) { top: -60px; left: 60px; animation-delay: 0.2s; }
-        .firework span:nth-child(3) { top: 0; left: 80px; animation-delay: 0.4s; }
-        .firework span:nth-child(4) { top: 60px; left: 60px; animation-delay: 0.6s; }
-        .firework span:nth-child(5) { top: 80px; left: 0; animation-delay: 0.8s; }
-        .firework span:nth-child(6) { top: 60px; left: -60px; animation-delay: 1s; }
-        .firework span:nth-child(7) { top: 0; left: -80px; animation-delay: 1.2s; }
-        .firework span:nth-child(8) { top: -60px; left: -60px; animation-delay: 1.4s; }
+        @keyframes shoot-up {
+            0% {
+                bottom: 0;
+                opacity: 1;
+            }
+            80% {
+                bottom: 80vh;
+                opacity: 1;
+            }
+            100% {
+                bottom: 80vh;
+                opacity: 0;
+            }
+        }
+
+        .burst {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: yellow;
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        @keyframes burst-animation {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
 
     <h1>Congratulations!</h1>
 
-    <div class="firework">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
+    <script>
+        function createFirecracker() {
+            const firecracker = document.createElement('div');
+            firecracker.classList.add('firecracker');
+            firecracker.style.left = Math.random() * window.innerWidth + 'px';
+
+            document.body.appendChild(firecracker);
+
+            setTimeout(() => {
+                createBurst(firecracker);
+                firecracker.remove();
+            }, 2000);
+        }
+
+        function createBurst(firecracker) {
+            for (let i = 0; i < 10; i++) {
+                const burst = document.createElement('div');
+                burst.classList.add('burst');
+                burst.style.left = firecracker.style.left;
+                burst.style.bottom = '80vh';
+                burst.style.animation = `burst-animation 1s ease-out forwards`;
+                burst.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px)`;
+
+                document.body.appendChild(burst);
+
+                setTimeout(() => {
+                    burst.remove();
+                }, 1000);
+            }
+        }
+
+        setInterval(createFirecracker, 500);
+    </script>
 
 </body>
 </html>
