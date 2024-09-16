@@ -33,15 +33,19 @@
             50% { opacity: 1; }
         }
 
-        h1 {
-            position: absolute;
-            color: white;
-            font-size: 5vw;
-            text-align: center;
+        /* Text styling */
+        .text-container {
+            position: relative;
             z-index: 10;
-            top: 15%;
-            letter-spacing: 5px;
+            color: white;
+            text-align: center;
             text-shadow: 0 0 20px rgba(255,255,255,0.6);
+            letter-spacing: 5px;
+        }
+
+        .text-container h1 {
+            font-size: 5vw;
+            margin: 0;
             opacity: 0;
             animation: text-glow 3s ease-out forwards;
         }
@@ -89,7 +93,7 @@
 
         /* Media Queries for mobile */
         @media (max-width: 768px) {
-            h1 {
+            .text-container h1 {
                 font-size: 8vw;
             }
 
@@ -117,8 +121,10 @@
 </head>
 <body>
 
-    <h1>Congratulations Divyamma!</h1>
-    <h1>All the very very best for your project divyamma!</h1>
+    <div class="text-container">
+        <h1>Congratulations Divyamma!</h1>
+        <h1>All the very very best for your project divyamma!</h1>
+    </div>
 
     <!-- Star background container -->
     <div id="star-container"></div>
