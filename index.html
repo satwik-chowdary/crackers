@@ -21,26 +21,37 @@
         h1 {
             position: absolute;
             color: white;
-            font-size: 4rem;
+            font-size: 6vw; /* Responsive font size using viewport width */
             z-index: 10;
+            top: 10%; /* Push the text to the top of the screen */
+            text-align: center;
+            width: 100%;
         }
 
         .firecracker {
             position: absolute;
             bottom: 0;
-            width: 5px;
-            height: 20px;
-            background-color: red;
+            width: 10px;
+            height: 30px;
+            background: linear-gradient(to top, red, yellow, blue, green);
+            border-radius: 50%;
             animation: shoot-up 2s ease-out forwards;
         }
 
         @keyframes shoot-up {
             0% {
                 bottom: 0;
+                transform: translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                bottom: 60vh;
+                transform: translateX(calc(-50px + 100px * random())) rotate(30deg);
                 opacity: 1;
             }
             80% {
                 bottom: 80vh;
+                transform: translateX(calc(-100px + 200px * random())) rotate(60deg);
                 opacity: 1;
             }
             100% {
@@ -51,8 +62,8 @@
 
         .spark {
             position: absolute;
-            width: 5px;
-            height: 5px;
+            width: 8px;
+            height: 8px;
             background-color: yellow;
             border-radius: 50%;
             opacity: 0;
@@ -64,8 +75,26 @@
                 opacity: 1;
             }
             100% {
-                transform: translate(var(--x), var(--y)) scale(0.5);
+                transform: translate(var(--x), var(--y)) scale(1);
                 opacity: 0;
+            }
+        }
+
+        /* Media query for mobile responsiveness */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 8vw; /* Increase font size on smaller screens */
+                top: 5%; /* Make sure it stays visible on mobile */
+            }
+            
+            .firecracker {
+                width: 8px; /* Smaller firecrackers on mobile */
+                height: 25px;
+            }
+
+            .spark {
+                width: 6px; /* Smaller sparks on mobile */
+                height: 6px;
             }
         }
     </style>
@@ -75,36 +104,44 @@
     <h1>Congratulations!</h1>
 
     <script>
+        // Utility function for randomness in non-linear shooting
+        function random() {
+            return Math.random() - 0.5; // Returns a value between -0.5 and 0.5 for random movement
+        }
+
+        // Function to create firecrackers
         function createFirecracker() {
             const firecracker = document.createElement('div');
             firecracker.classList.add('firecracker');
             firecracker.style.left = Math.random() * window.innerWidth + 'px';
+            firecracker.style.background = `linear-gradient(to top, ${randomColor()}, ${randomColor()}, ${randomColor()})`;
 
             document.body.appendChild(firecracker);
 
-            // Trigger explosion after 2 seconds (the duration of the firecracker flight)
             setTimeout(() => {
                 createBurst(firecracker);
                 firecracker.remove();
             }, 2000);
         }
 
+        // Function to create burst of sparks
         function createBurst(firecracker) {
-            const numSparks = 20; // Number of sparks per burst
-            const colors = ['red', 'yellow', 'blue', 'green', 'orange', 'purple', 'pink'];
-            const angleStep = (2 * Math.PI) / numSparks; // To create sparks in a circular form
+            const numSparks = 25; // More sparks for a bigger burst
+            const burstRadius = 150; // Increased radius for larger circular burst
+            const colors = ['red', 'yellow', 'blue', 'green', 'orange', 'purple', 'pink', 'cyan', 'lime', 'magenta'];
+            const angleStep = (2 * Math.PI) / numSparks; // Circular arrangement
 
             for (let i = 0; i < numSparks; i++) {
                 const spark = document.createElement('div');
                 spark.classList.add('spark');
 
-                // Randomize the spark color
+                // Randomize the spark color from a vibrant palette
                 spark.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
 
                 // Calculate angle and position for circular burst
                 const angle = i * angleStep;
-                const x = Math.cos(angle) * 100 + 'px'; // Spread sparks out to 100px radius
-                const y = Math.sin(angle) * 100 + 'px';
+                const x = Math.cos(angle) * burstRadius + 'px'; // Larger radius for wider spread
+                const y = Math.sin(angle) * burstRadius + 'px';
 
                 // Set custom properties for animation
                 spark.style.setProperty('--x', x);
@@ -115,15 +152,25 @@
                 spark.style.bottom = '80vh';
 
                 // Add burst animation
-                spark.style.animation = `burst-animation 1s ease-out forwards`;
+                spark.style.animation = `burst-animation 1.2s ease-out forwards`;
 
                 document.body.appendChild(spark);
 
                 // Remove sparks after animation
                 setTimeout(() => {
                     spark.remove();
-                }, 1000);
+                }, 1200);
             }
+        }
+
+        // Random color generator for multicolored firecrackers
+        function randomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
         }
 
         // Create firecrackers repeatedly
